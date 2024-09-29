@@ -12,5 +12,5 @@ interface PermissionRepository {
     fun checkPermissions()
     fun requestNotificationPermission()
     fun requestAudioPermission()
-    fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray)
+    fun onRequestPermissionsResult(requestCode: Int, grantResult: Boolean)
 }

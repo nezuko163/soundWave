@@ -29,15 +29,15 @@ class AuthViewModel @Inject constructor(
         permissionRepository.setActivity1(activity)
     }
 
-    private val notificationPermission = permissionRepository.notificationPermissionIsGranted
+    val notificationPermission = permissionRepository.notificationPermissionIsGranted
 
-    fun checkNotificationPermission() {
+    fun checkPermissions() {
         permissionRepository.checkPermissions()
         Log.i(TAG, "checkNotificationPermission: ${notificationPermission.value}")
-        if (!notificationPermission.value) {
-            Log.i(TAG, "checkNotificationPermission: asd")
-            permissionRepository.requestNotificationPermission()
-        }
+    }
+
+    fun onPermissionRequest(requestCode: Int, grantResult: Boolean) {
+        permissionRepository.onRequestPermissionsResult(requestCode, grantResult)
     }
 
     companion object {

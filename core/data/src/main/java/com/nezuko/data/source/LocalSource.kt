@@ -55,7 +55,7 @@ class LocalSource @Inject constructor(
 
                 lstAudio.add(audio)
             }
-
+        Log.i(TAG, "loadLocalTracks: $lstAudio")
         localTracksPlaylist.tracksList = lstAudio
     }
 

@@ -1,6 +1,8 @@
 package com.nezuko.auth
 
+import android.Manifest
 import android.app.Activity
+import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,8 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,7 +38,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.nezuko.data.REQUEST_CODE_NOTIFICATION
 import com.nezuko.ui.theme.LightBlue
+import com.nezuko.ui.util.permissionLauncher
 
 private const val TAG = "StartRoute"
 
@@ -41,14 +48,30 @@ private const val TAG = "StartRoute"
 @Composable
 fun StartRoute(
     vm: AuthViewModel = hiltViewModel(),
-    onSignInCLick: () -> Unit,
-    onSignUpCLick: () -> Unit,
+    onSignInClick: () -> Unit,
+    onSignUpClick: () -> Unit,
 ) {
     Log.i(TAG, "StartRoute: recomp")
-    val context = LocalContext.current
 
-    vm.setActivity(context as Activity)
-    vm.checkNotificationPermission()
+    val isFirstLoading by remember { mutableStateOf(true) }
+    val context = LocalContext.current
+    val notificationPermission by vm.notificationPermission.collectAsState()
+
+    val launcher = permissionLauncher(
+        onGranted = { vm.onPermissionRequest(REQUEST_CODE_NOTIFICATION, true) },
+        onFailure = { vm.onPermissionRequest(REQUEST_CODE_NOTIFICATION, false) },
+    )
+
+    LaunchedEffect(isFirstLoading) {
+        vm.setActivity(context as Activity)
+        vm.checkPermissions()
+
+        if (!notificationPermission) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
 
     val montserratFont = FontFamily(Font(com.nezuko.ui.R.font.montserrat_light))
 
@@ -117,13 +140,12 @@ fun StartRoute(
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .clickable { onSignInCLick.invoke() },
+                    .clickable { onSignInClick.invoke() },
                 text = signIn,
                 style = TextStyle(
                     fontSize = 25.sp,
                     fontFamily = montserratFont
                 ),
-//                textDecoration = TextDecoration.Underline
             )
 
             Spacer(modifier = Modifier.padding(vertical = 10.dp))
@@ -131,13 +153,12 @@ fun StartRoute(
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .clickable { onSignUpCLick.invoke() },
+                    .clickable { onSignUpClick.invoke() },
                 text = signUp,
                 style = TextStyle(
                     fontSize = 25.sp,
                     fontFamily = montserratFont
                 ),
-//                textDecoration = TextDecoration.Underline
             )
 
             Spacer(modifier = Modifier.padding(vertical = 40.dp))

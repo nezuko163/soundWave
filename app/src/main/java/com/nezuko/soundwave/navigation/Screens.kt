@@ -106,10 +106,10 @@ class StartScreen(private val vm: AuthViewModel) : Screen {
 
         StartRoute(
             vm = vm,
-            onSignUpCLick = {
+            onSignUpClick = {
                 navigator.push(RegisterScreen(vm))
             },
-            onSignInCLick = {
+            onSignInClick = {
                 navigator.push(LoginScreen(vm))
             }
         )

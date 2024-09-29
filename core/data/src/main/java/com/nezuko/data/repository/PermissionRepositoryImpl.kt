@@ -7,6 +7,8 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.nezuko.data.REQUEST_CODE_AUDIO
+import com.nezuko.data.REQUEST_CODE_NOTIFICATION
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -95,32 +97,27 @@ class PermissionRepositoryImpl @Inject constructor() : PermissionRepository {
         requestPermission(permission, REQUEST_CODE_AUDIO)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, grantResult: Boolean) {
+
+        Log.i(TAG, "onRequestPermissionsResult: $requestCode")
         when (requestCode) {
             REQUEST_CODE_NOTIFICATION -> {
-                _notificationPermissionIsGranted.update {
-                    Log.i(
-                        TAG,
-                        "onRequestPermissionsResult: notific - ${grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED}"
-                    )
-                    grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                if (_notificationPermissionIsGranted.value != grantResult) {
+                    _notificationPermissionIsGranted.update {
+                        Log.i(TAG, "onRequestPermissionsResult: notific - $grantResult")
+                        grantResult
+                    }
                 }
             }
 
             REQUEST_CODE_AUDIO -> {
-                _notificationPermissionIsGranted.update {
-                    Log.i(
-                        TAG,
-                        "onRequestPermissionsResult: audio - ${grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED}"
-                    )
-                    grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                if (_audioPermissionIsGranted.value != grantResult) {
+                    _audioPermissionIsGranted.update {
+                        Log.i(TAG, "onRequestPermissionsResult: audio - $grantResult")
+                        grantResult
+                    }
                 }
             }
         }
-    }
-
-    companion object {
-        const val REQUEST_CODE_NOTIFICATION = 1001
-        const val REQUEST_CODE_AUDIO = 1002
     }
 }
