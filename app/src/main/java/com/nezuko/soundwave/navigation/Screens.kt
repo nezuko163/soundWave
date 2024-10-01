@@ -38,16 +38,11 @@ import com.nezuko.auth.StartRoute
 import com.nezuko.home.HomeRoute
 import com.nezuko.home.HomeViewModel
 import com.nezuko.library.LibraryRoute
-import com.nezuko.library.LibraryViewModel
 import com.nezuko.playlist.PlaylistDetailsRoute
 import com.nezuko.search.SearchRoute
 import com.nezuko.search.SearchViewModel
 
 private const val TAG = "SCREENS_TAG"
-
-abstract class ScreenWithBottomBar : Screen
-
-private var a: UShort = 0u
 
 object HomeScreen : Tab {
     private fun readResolve(): Any = HomeScreen
