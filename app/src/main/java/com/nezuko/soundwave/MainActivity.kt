@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
 
             val startDestination: Screen = when (uiState.data) {
                 AuthState.Ready -> MainScreen()
-                AuthState.WaitRegister, AuthState.Unregister, null -> MainScreen()
+                AuthState.WaitRegister, AuthState.Unregister, null -> AuthScreen
             }
             SoundWaveTheme {
                 Log.i(TAG, "onCreate: $startDestination")

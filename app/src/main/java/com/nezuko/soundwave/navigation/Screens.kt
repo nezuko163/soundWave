@@ -1,8 +1,6 @@
 package com.nezuko.soundwave.navigation
 
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -10,21 +8,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -46,7 +39,7 @@ import com.nezuko.home.HomeRoute
 import com.nezuko.home.HomeViewModel
 import com.nezuko.library.LibraryRoute
 import com.nezuko.library.LibraryViewModel
-import com.nezuko.playlist.PlaylistRoute
+import com.nezuko.playlist.PlaylistDetailsRoute
 import com.nezuko.search.SearchRoute
 import com.nezuko.search.SearchViewModel
 
@@ -67,7 +60,7 @@ object HomeScreen : Tab {
 
             return remember {
                 TabOptions(
-                    index = a++,
+                    index = 1u,
                     title = title,
                     icon = icon
                 )
@@ -88,7 +81,6 @@ object AuthScreen : Screen {
     @Composable
     override fun Content() {
         val vm: AuthViewModel = hiltViewModel()
-
         Navigator(StartScreen(vm = vm)) { navigator ->
             SlideTransition(navigator = navigator)
         }
@@ -96,7 +88,6 @@ object AuthScreen : Screen {
 }
 
 class RegisterScreen(private val vm: AuthViewModel) : Screen {
-
     @Composable
     override fun Content() {
         RegisterRoute(vm = vm)
@@ -144,7 +135,7 @@ object SearchScreen : Tab {
 
             return remember {
                 TabOptions(
-                    index = a++,
+                    index = 2u,
                     title = title,
                     icon = icon
                 )
@@ -170,7 +161,7 @@ object LibraryScreen : Tab {
 
             return remember {
                 TabOptions(
-                    index = a++,
+                    index = 3u,
                     title = title,
                     icon = icon
                 )
@@ -179,23 +170,19 @@ object LibraryScreen : Tab {
 
     @Composable
     override fun Content() {
-        val vm: LibraryViewModel = hiltViewModel()
-
-        Navigator(PlaylistsScreen(vm)) {
+        Navigator(PlaylistsScreen()) {
             CurrentScreen()
         }
-
-
     }
 
-    class PlaylistsScreen(private val vm: LibraryViewModel) : Screen {
+    class PlaylistsScreen : Screen {
         @Composable
         override fun Content() {
+            Log.i(TAG, "Content: playlists")
             val navigator = LocalNavigator.currentOrThrow
             LibraryRoute(
-                vm = vm,
                 onPlaylistClick = { playlist ->
-                    navigator.push(PlaylistScreen(playlist.id))
+                    navigator.push(PlaylistDetailsScreen(playlist.id))
                 }
             )
         }
@@ -207,8 +194,7 @@ class MainScreen : Screen {
 
     @Composable
     override fun Content() {
-        Log.i(TAG, "Content: ")
-        TabNavigator(tab = LibraryScreen) {
+        TabNavigator(tab = HomeScreen) {
             Scaffold(
                 bottomBar = {
                     NavigationBar {
@@ -231,7 +217,6 @@ class MainScreen : Screen {
     @Composable
     private fun RowScope.TabNavigationItem(tab: Tab) {
         val tabNavigator = LocalTabNavigator.current
-        Log.i(TAG, "TabNavigationItem: ${tabNavigator.current}")
         NavigationBarItem(
             selected = tabNavigator.current == tab,
             onClick = { tabNavigator.current = tab },
@@ -254,11 +239,12 @@ class PlaceHolderScreen : Screen {
     }
 }
 
-class PlaylistScreen(val playlistID: Long) : Screen {
+class PlaylistDetailsScreen(val playlistID: Long) : Screen {
     @Composable
     override fun Content() {
+        Log.i(TAG, "Content: playlist details")
         val navigator = LocalNavigator.currentOrThrow
-        PlaylistRoute(
+        PlaylistDetailsRoute(
             id = playlistID,
             onNavigateBack = navigator::pop
         )

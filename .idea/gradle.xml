@@ -17,7 +17,7 @@
             <option value="$PROJECT_DIR$/feature/auth" />
             <option value="$PROJECT_DIR$/feature/home" />
             <option value="$PROJECT_DIR$/feature/library" />
-            <option value="$PROJECT_DIR$/feature/playlist" />
+            <option value="$PROJECT_DIR$/feature/playlistDetails" />
             <option value="$PROJECT_DIR$/feature/search" />
           </set>
         </option>

@@ -91,5 +91,5 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:search"))
     implementation(project(":feature:library"))
-    implementation(project(":feature:playlist"))
+    implementation(project(":feature:playlistDetails"))
 }

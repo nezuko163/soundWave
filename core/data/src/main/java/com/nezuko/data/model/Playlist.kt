@@ -7,7 +7,7 @@ data class Playlist(
     val ownerName: String,
     val artUrl: String,
     var tracksIdList: ArrayList<Long>,
-    var tracksList: ArrayList<Audio>,
+    var tracksList: ArrayList<Audio> = arrayListOf(),
     val dateCreated: Long,
     val dateModified: Long
 ) {
@@ -18,11 +18,9 @@ data class Playlist(
             ownerId = "",
             ownerName = "",
             artUrl = "",
-            tracksList = arrayListOf(),
             tracksIdList = arrayListOf(),
             dateModified = -1L,
             dateCreated = -1L,
-
         )
     }
 }

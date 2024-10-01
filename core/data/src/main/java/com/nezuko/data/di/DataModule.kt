@@ -4,7 +4,7 @@ import android.content.Context
 import com.nezuko.data.repository.AuthRepositoryImpl
 import com.nezuko.data.repository.PermissionRepositoryImpl
 import com.nezuko.data.repository.PlaylistRepositoryImpl
-import com.nezuko.data.source.LocalSource
+import com.nezuko.data.source.local.LocalSource
 import com.nezuko.data.source.RemoteSource
 import com.nezuko.data.repository.AuthRepository
 import com.nezuko.data.repository.PermissionRepository

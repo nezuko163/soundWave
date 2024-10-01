@@ -50,19 +50,21 @@ fun PlaylistsList(
     ) {
         itemsIndexed(
             items = playlists,
-            key = { _: Int, playlist: Playlist ->
-                playlist.id
-            }
+//            key = { _: Int, playlist: Playlist ->
+//                playlist.id
+//            }
         ) { _: Int, playlist: Playlist ->
-            PlaylistCard(
-                playlist = playlist,
-                onPlaylistClick = onPlaylistClick,
-                onPlaylistMoreClick = {
-                    lastPlaylistClicked = playlist
-                    onPlaylistMoreClick(playlist)
-                    showBottomSheet = true
-                },
-            )
+            for (i in 0..20) {
+                PlaylistCard(
+                    playlist = playlist,
+                    onPlaylistClick = onPlaylistClick,
+                    onPlaylistMoreClick = {
+                        lastPlaylistClicked = playlist
+                        onPlaylistMoreClick(playlist)
+                        showBottomSheet = true
+                    }
+                )
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.nezuko.data.source
+package com.nezuko.data.source.local
 
 import android.content.Context
 import android.util.Log
@@ -11,26 +11,26 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TAG = "LocalSource"
 
 @Singleton
 class LocalSource @Inject constructor(
     private val context: Context,
     private val dispatcher: CoroutineDispatcher
 ) {
+    private val TAG = "LocalSource"
+
     val localTracksPlaylist = Playlist(
-        id = -1L,
+        id = 0L,
         title = "Файлы на устройстве",
         ownerId = "",
         ownerName = "Плейлист",
         artUrl = "",
         tracksIdList = arrayListOf(),
-        tracksList = arrayListOf(),
         dateCreated = -1L,
         dateModified = -1L
     )
 
-    fun loadLocalTracks() {
+    fun loadLocalTracks(): ArrayList<Audio> {
         val lstAudio = ArrayList<Audio>()
 
         MediaFacer.withAudioContex(context)
@@ -54,7 +54,8 @@ class LocalSource @Inject constructor(
                 lstAudio.add(audio)
             }
         Log.i(TAG, "loadLocalTracks: $lstAudio")
-        localTracksPlaylist.tracksList = lstAudio
+        localTracksPlaylist.tracksList.addAll(lstAudio)
+        return lstAudio
     }
 
     var localPlaylists: List<Playlist> = listOf()
@@ -62,4 +63,5 @@ class LocalSource @Inject constructor(
     suspend fun loadLocalPlaylists(): Playlist {
         TODO()
     }
+
 }
