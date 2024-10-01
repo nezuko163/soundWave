@@ -23,7 +23,7 @@ class LibraryViewModel @Inject constructor(
             playlistRepository.startLoading()
             playlistRepository.loadLocalTracks()
             playlistRepository.loadLocalPlaylists()
-//            playlistRepository.loadRemotePlaylists()
+            playlistRepository.loadRemotePlaylists()
         }
     }
 

@@ -5,11 +5,9 @@ import android.util.Log
 import com.CodeBoy.MediaFacer.AudioGet
 import com.CodeBoy.MediaFacer.MediaFacer
 import com.CodeBoy.MediaFacer.mediaHolders.audioContent
-import com.nezuko.data.di.Dispatcher
 import com.nezuko.data.model.Audio
 import com.nezuko.data.model.Playlist
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,7 +21,7 @@ class LocalSource @Inject constructor(
     val localTracksPlaylist = Playlist(
         id = -1L,
         title = "Файлы на устройстве",
-        owner_id = "",
+        ownerId = "",
         ownerName = "Плейлист",
         artUrl = "",
         tracksIdList = arrayListOf(),

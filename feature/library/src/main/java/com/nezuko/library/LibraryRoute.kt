@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nezuko.data.REQUEST_CODE_AUDIO
 import com.nezuko.data.REQUEST_CODE_NOTIFICATION
+import com.nezuko.data.model.Playlist
 import com.nezuko.data.model.ResultModel
 import com.nezuko.ui.util.permissionLauncher
 
@@ -26,6 +27,7 @@ private const val TAG = "LibraryRoute"
 @Composable
 fun LibraryRoute(
     modifier: Modifier = Modifier,
+    onPlaylistClick: (Playlist) -> Unit,
     vm: LibraryViewModel = hiltViewModel()
 ) {
     val playlists by vm.playlists.collectAsState()
@@ -59,9 +61,12 @@ fun LibraryRoute(
     }
 
     if (playlists.data != null && playlists.status == ResultModel.Status.SUCCESS) {
-        LibraryScreen(modifier = modifier, playlists = playlists.data!!)
+        LibraryScreen(
+            modifier = modifier,
+            playlists = playlists.data!!,
+            onPlaylistClick = onPlaylistClick
+        )
     }
-
     else if (playlists.status == ResultModel.Status.LOADING) {
         Box(modifier = modifier.fillMaxSize()) {
             Text(text = "Загрузка", modifier = Modifier.align(Alignment.Center))

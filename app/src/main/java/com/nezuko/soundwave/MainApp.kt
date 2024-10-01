@@ -21,7 +21,7 @@ private val TAG = "MAIN_APP"
 @Composable
 fun App(
     modifier: Modifier = Modifier,
-    startDestination: Screen = PlaceHolderScreen
+    startDestination: Screen = PlaceHolderScreen()
 ) {
     Log.i(TAG, "App: $startDestination")
     Navigator(screen = startDestination) { navigator ->

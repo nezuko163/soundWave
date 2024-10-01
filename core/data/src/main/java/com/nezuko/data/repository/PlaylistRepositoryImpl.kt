@@ -22,19 +22,16 @@ class PlaylistRepositoryImpl @Inject constructor(
         get() = _playlists
 
     private val _localPlaylists: ArrayList<Playlist> = arrayListOf()
-    override val localPlaylists: List<Playlist>
-        get() = _localPlaylists
-
     private val _remotePlaylists: ArrayList<Playlist> = arrayListOf()
-    override val remotePlaylists: List<Playlist>
-        get() = _remotePlaylists
+
+    private var isLocalPlaylistsLoaded = false
+    private var isRemotePlaylistsLoaded = false
 
     override fun startLoading() {
         _playlists.value = ResultModel.loading()
     }
 
     override suspend fun loadLocalPlaylists() {
-
         if (_localPlaylists.isEmpty()) {
             _localPlaylists.add(localSource.localTracksPlaylist)
         }
@@ -42,6 +39,10 @@ class PlaylistRepositoryImpl @Inject constructor(
         if (localSource.localPlaylists.isNotEmpty()) {
             _localPlaylists.addAll(localSource.localPlaylists)
         }
+
+        isLocalPlaylistsLoaded = true
+
+        if (isRemotePlaylistsLoaded) endLoading()
     }
 
     override suspend fun loadLocalTracks() {
@@ -51,5 +52,18 @@ class PlaylistRepositoryImpl @Inject constructor(
 
     override suspend fun loadRemotePlaylists() {
 
+        isRemotePlaylistsLoaded = true
+
+        if (isLocalPlaylistsLoaded) endLoading()
     }
+
+    private fun endLoading() {
+        if (_localPlaylists.isNotEmpty() || _remotePlaylists.isNotEmpty()) {
+            _playlists.update {
+                ResultModel.success((_localPlaylists + _remotePlaylists) as ArrayList<Playlist>)
+            }
+        }
+    }
+
+
 }

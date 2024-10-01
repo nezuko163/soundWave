@@ -1,6 +1,8 @@
 package com.nezuko.soundwave.navigation
 
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -19,10 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -40,6 +46,7 @@ import com.nezuko.home.HomeRoute
 import com.nezuko.home.HomeViewModel
 import com.nezuko.library.LibraryRoute
 import com.nezuko.library.LibraryViewModel
+import com.nezuko.playlist.PlaylistRoute
 import com.nezuko.search.SearchRoute
 import com.nezuko.search.SearchViewModel
 
@@ -174,34 +181,47 @@ object LibraryScreen : Tab {
     override fun Content() {
         val vm: LibraryViewModel = hiltViewModel()
 
-        LibraryRoute(vm = vm)
+        Navigator(PlaylistsScreen(vm)) {
+            CurrentScreen()
+        }
+
+
+    }
+
+    class PlaylistsScreen(private val vm: LibraryViewModel) : Screen {
+        @Composable
+        override fun Content() {
+            val navigator = LocalNavigator.currentOrThrow
+            LibraryRoute(
+                vm = vm,
+                onPlaylistClick = { playlist ->
+                    navigator.push(PlaylistScreen(playlist.id))
+                }
+            )
+        }
+
     }
 }
 
-object MainScreen : Screen {
-    private fun readResolve(): Any = MainScreen
+class MainScreen : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         Log.i(TAG, "Content: ")
-        TabNavigator(tab = HomeScreen) {
+        TabNavigator(tab = LibraryScreen) {
             Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text(text = "My App") }
-                    )
-                },
                 bottomBar = {
                     NavigationBar {
                         TabNavigationItem(HomeScreen)
                         TabNavigationItem(SearchScreen)
                         TabNavigationItem(LibraryScreen)
-                    } // Нижняя панель навигации
-                }
+                    }
+                },
             ) { paddingValues ->
-                // Отображение текущей вкладки с учетом отступов
-                Box(modifier = Modifier.padding(paddingValues)) {
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = paddingValues.calculateBottomPadding())
+                ) {
                     CurrentTab()
                 }
             }
@@ -211,7 +231,7 @@ object MainScreen : Screen {
     @Composable
     private fun RowScope.TabNavigationItem(tab: Tab) {
         val tabNavigator = LocalTabNavigator.current
-
+        Log.i(TAG, "TabNavigationItem: ${tabNavigator.current}")
         NavigationBarItem(
             selected = tabNavigator.current == tab,
             onClick = { tabNavigator.current = tab },
@@ -220,8 +240,7 @@ object MainScreen : Screen {
     }
 }
 
-object PlaceHolderScreen : Screen {
-    private fun readResolve(): Any = PlaceHolderScreen
+class PlaceHolderScreen : Screen {
 
     @Composable
     override fun Content() {
@@ -232,5 +251,16 @@ object PlaceHolderScreen : Screen {
                 fontSize = 30.sp
             )
         }
+    }
+}
+
+class PlaylistScreen(val playlistID: Long) : Screen {
+    @Composable
+    override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        PlaylistRoute(
+            id = playlistID,
+            onNavigateBack = navigator::pop
+        )
     }
 }
