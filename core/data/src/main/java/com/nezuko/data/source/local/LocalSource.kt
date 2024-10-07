@@ -45,7 +45,7 @@ class LocalSource @Inject constructor(
                     artUrl = it.art_uri.toString(),
                     mediaUrl = it.assetFileStringUri,
                     duration = it.duration,
-                    owner_id = "",
+                    ownerId = "",
                     dateAdded = it.date_added,
                     queueId = index.toLong()
                 )

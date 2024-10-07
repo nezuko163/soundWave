@@ -9,6 +9,7 @@ import com.nezuko.data.source.RemoteSource
 import com.nezuko.data.repository.AuthRepository
 import com.nezuko.data.repository.PermissionRepository
 import com.nezuko.data.repository.PlaylistRepository
+import com.nezuko.data.source.local.db.DBManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -45,5 +46,12 @@ interface DataModule {
         @Provides
         @Singleton
         fun provideRemoteSource() = RemoteSource()
+
+        @Provides
+        @Singleton
+        fun provideDBManager(
+            @ApplicationContext context: Context,
+            @Dispatcher(MyDispatchers.IO) dispatcher: CoroutineDispatcher
+        ) = DBManager(context, dispatcher)
     }
 }
