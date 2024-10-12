@@ -30,7 +30,7 @@ class LocalSource @Inject constructor(
         dateModified = -1L
     )
 
-    fun loadLocalTracks(): ArrayList<Audio> {
+    fun loadLocalTracks(): List<Audio> {
         val lstAudio = ArrayList<Audio>()
 
         MediaFacer.withAudioContex(context)
@@ -57,11 +57,4 @@ class LocalSource @Inject constructor(
         localTracksPlaylist.tracksList.addAll(lstAudio)
         return lstAudio
     }
-
-    var localPlaylists: List<Playlist> = listOf()
-
-    suspend fun loadLocalPlaylists(): Playlist {
-        TODO()
-    }
-
 }

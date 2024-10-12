@@ -66,7 +66,8 @@ fun LibraryRoute(
         LibraryScreen(
             modifier = modifier,
             playlists = playlists,
-            onPlaylistClick = onPlaylistClick
+            onPlaylistClick = onPlaylistClick,
+            onAddClick = {}
         )
     }
 //    else if (playlists.status == ResultModel.Status.LOADING) {

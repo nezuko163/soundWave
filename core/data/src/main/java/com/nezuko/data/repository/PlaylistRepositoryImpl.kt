@@ -1,19 +1,30 @@
 package com.nezuko.data.repository
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import com.nezuko.data.di.ApplicationScope
 import com.nezuko.data.model.Audio
 import com.nezuko.data.model.Playlist
 import com.nezuko.data.source.local.LocalSource
 import com.nezuko.data.source.RemoteSource
+import com.nezuko.data.source.local.db.DBManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
 class PlaylistRepositoryImpl @Inject constructor(
     private val localSource: LocalSource,
-    private val remoteSource: RemoteSource
+    private val remoteSource: RemoteSource,
+    private val dbManager: DBManager,
+    @ApplicationScope private val coroutineScope: CoroutineScope
 ) : PlaylistRepository {
 
     private val TAG = "PlaylistRepositoryImpl"
@@ -26,28 +37,24 @@ class PlaylistRepositoryImpl @Inject constructor(
     override val loadedTracks: StateFlow<HashSet<Audio>>
         get() = _loadedTracks
 
-    private val _localPlaylists: ArrayList<Playlist> = arrayListOf()
-    private val _remotePlaylists: ArrayList<Playlist> = arrayListOf()
+    private lateinit var _localPlaylists: StateFlow<List<Playlist>>
+    private lateinit var _remotePlaylists: StateFlow<List<Playlist>>
+    private lateinit var _localTracksPlaylist: Playlist
 
     private var isLocalPlaylistsLoaded = false
     private var isRemotePlaylistsLoaded = false
 
 
     override fun startLoading() {
-        _playlists.value
+
     }
 
     override suspend fun loadLocalPlaylists() {
-        if (_localPlaylists.isEmpty()) {
-            _localPlaylists.add(localSource.localTracksPlaylist)
-            _playlistsWithLoadedTracks.update {
-                it.apply { add(localSource.localTracksPlaylist) }
+        _localPlaylists = dbManager.localPlaylists().map {
+            it.map { playlistEntity ->
+                playlistEntity.toPlaylist()
             }
-        }
-
-        if (localSource.localPlaylists.isNotEmpty()) {
-            _localPlaylists.addAll(localSource.localPlaylists)
-        }
+        }.stateIn(coroutineScope, SharingStarted.Eagerly, listOf())
 
         isLocalPlaylistsLoaded = true
 
@@ -56,18 +63,21 @@ class PlaylistRepositoryImpl @Inject constructor(
 
     override suspend fun loadLocalTracks() {
         Log.i(TAG, "loadLocalTracks: start")
-        _loadedTracks.update { it.apply { addAll(localSource.loadLocalTracks()) } }
+
+        localSource.loadLocalTracks()
+        _localTracksPlaylist = localSource.localTracksPlaylist
+        _loadedTracks.update { it.apply { addAll(_localTracksPlaylist.tracksList) } }
     }
 
     override suspend fun loadRemotePlaylists() {
+        _remotePlaylists = remoteSource.remotePlaylists
         isRemotePlaylistsLoaded = true
         if (isLocalPlaylistsLoaded) endLoading()
     }
 
     private fun endLoading() {
-        if (_localPlaylists.isNotEmpty() || _remotePlaylists.isNotEmpty()) {
-            _playlists.update { (_localPlaylists + _remotePlaylists) as ArrayList<Playlist> }
-        }
+        _playlists.value =
+            ArrayList(_remotePlaylists.value + _localPlaylists.value + _localTracksPlaylist)
     }
 
     private val _playlistsWithLoadedTracks = MutableStateFlow<ArrayList<Playlist>>(arrayListOf())
