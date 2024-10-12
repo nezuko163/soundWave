@@ -1,27 +1,22 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
 
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+
 }
 
 android {
-    namespace = "com.nezuko.soundwave"
+    namespace = "com.nezuko.addNewPlaylist"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.nezuko.soundwave"
         minSdk = 29
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -54,43 +49,19 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:data"))
+    implementation(project(":core:ui"))
 
-    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 
-    // hiltViewModel
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Voyager
-    implementation(libs.voyager.navigator)
-    implementation(libs.voyager.transitions)
-    implementation(libs.voyager.tab.navigator)
-
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
-
-
-    implementation(libs.androidx.core.splashscreen)
-
-
-    implementation(project(":core:ui"))
-    implementation(project(":core:data"))
-    implementation(project(":feature:home"))
-    implementation(project(":feature:auth"))
-    implementation(project(":feature:search"))
-    implementation(project(":feature:library"))
-    implementation(project(":feature:playlistDetails"))
-    implementation(project(":feature:addNewPlaylist"))
 }

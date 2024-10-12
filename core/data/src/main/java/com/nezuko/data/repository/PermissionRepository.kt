@@ -10,7 +10,5 @@ interface PermissionRepository {
 
     fun setActivity1(activity: Activity)
     fun checkPermissions()
-    fun requestNotificationPermission()
-    fun requestAudioPermission()
     fun onRequestPermissionsResult(requestCode: Int, grantResult: Boolean)
 }

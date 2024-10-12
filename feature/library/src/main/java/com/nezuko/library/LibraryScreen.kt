@@ -28,7 +28,7 @@ fun LibraryScreen(
             TopAppBar(
                 title = { Text(text = "Бибилиотека") },
                 actions = {
-                    IconButton(onClick = { onAddClick }) {
+                    IconButton(onClick = onAddClick) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "")
                     }
                 }

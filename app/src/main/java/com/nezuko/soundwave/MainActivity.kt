@@ -35,9 +35,14 @@ class MainActivity : ComponentActivity() {
             val isFirstScreenLoaded by vm.isFirstScreenLoaded.collectAsState(false)
             splashScreen.setKeepOnScreenCondition { !isFirstScreenLoaded }
 
+//            val startDestination: Screen = when (uiState.data) {
+//                AuthState.Ready -> MainScreen()
+//                AuthState.WaitRegister, AuthState.Unregister, null -> AuthScreen
+//            }
+
             val startDestination: Screen = when (uiState.data) {
                 AuthState.Ready -> MainScreen()
-                AuthState.WaitRegister, AuthState.Unregister, null -> AuthScreen
+                AuthState.WaitRegister, AuthState.Unregister, null -> MainScreen()
             }
             SoundWaveTheme {
                 Log.i(TAG, "onCreate: $startDestination")

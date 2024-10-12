@@ -21,7 +21,8 @@ private const val TAG = "LibraryRoute"
 @Composable
 fun LibraryRoute(
     modifier: Modifier = Modifier,
-    onPlaylistClick: (Playlist) -> Unit,
+    onPlaylistDetailsNavigate: (Playlist) -> Unit,
+    onAddNewPlaylistNavigate: () -> Unit,
     vm: LibraryViewModel = hiltViewModel()
 ) {
 
@@ -29,16 +30,13 @@ fun LibraryRoute(
     val audioPermissionIsGranted by vm.audioPermission.collectAsState()
     var isFirstLoading by rememberSaveable { mutableStateOf(true) }
 
-    Log.i(TAG, "LibraryRoute: plailists - $playlists")
-    Log.i(TAG, "LibraryRoute: audio - $audioPermissionIsGranted")
-    Log.i(TAG, "LibraryRoute: isfirst - $isFirstLoading")
-
     val launcher = permissionLauncher(
         onGranted = { vm.onPermissionRequest(REQUEST_CODE_AUDIO, true) },
         onFailure = { vm.onPermissionRequest(REQUEST_CODE_AUDIO, false) },
     )
 
     LaunchedEffect(isFirstLoading) {
+        Log.i(TAG, "LibraryRoute: isfirst = $isFirstLoading")
         if (!isFirstLoading) return@LaunchedEffect
         if (!audioPermissionIsGranted) {
             val permission =
@@ -53,12 +51,15 @@ fun LibraryRoute(
     }
 
     LaunchedEffect(audioPermissionIsGranted) {
+        Log.i(TAG, "LibraryRoute: launched: isfirst = $isFirstLoading")
+        Log.i(TAG, "LibraryRoute: launched: audio = $audioPermissionIsGranted")
+
         if (isFirstLoading) {
-            Log.i(TAG, "LibraryRoute: audioPermissionIsGranted - $audioPermissionIsGranted")
             if (audioPermissionIsGranted) {
+                Log.i(TAG, "LibraryRoute: гавно")
                 vm.loadPlaylists()
+                isFirstLoading = false
             }
-            isFirstLoading = false
         }
     }
 
@@ -66,8 +67,8 @@ fun LibraryRoute(
         LibraryScreen(
             modifier = modifier,
             playlists = playlists,
-            onPlaylistClick = onPlaylistClick,
-            onAddClick = {}
+            onPlaylistClick = onPlaylistDetailsNavigate,
+            onAddClick = onAddNewPlaylistNavigate
         )
     }
 //    else if (playlists.status == ResultModel.Status.LOADING) {

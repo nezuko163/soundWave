@@ -52,7 +52,6 @@ class PermissionRepositoryImpl @Inject constructor() : PermissionRepository {
                 ) == PackageManager.PERMISSION_GRANTED
             }
         }
-
         Log.i(TAG, "checkAudioPermission: ${_audioPermissionIsGranted.value}")
     }
 
@@ -78,23 +77,6 @@ class PermissionRepositoryImpl @Inject constructor() : PermissionRepository {
             Log.i(TAG, "requestPermission: $permission")
             ActivityCompat.requestPermissions(myActivity, arrayOf(permission), requestCode)
         }
-    }
-
-    override fun requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermission(Manifest.permission.POST_NOTIFICATIONS, REQUEST_CODE_NOTIFICATION)
-        }
-    }
-
-    override fun requestAudioPermission() {
-        val permission =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Manifest.permission.READ_MEDIA_AUDIO
-            } else {
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            }
-
-        requestPermission(permission, REQUEST_CODE_AUDIO)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, grantResult: Boolean) {

@@ -15,9 +15,9 @@ import coil.request.ImageRequest
 private val TAG = "ImageFromInet"
 
 @Composable
-fun ImageFromInet(
+fun ImageFromURI(
     modifier: Modifier = Modifier,
-    url: String,
+    url: Any,
     errorImageResource: Int,
     contentDescription: String = "",
     crossFade: Boolean = false) {

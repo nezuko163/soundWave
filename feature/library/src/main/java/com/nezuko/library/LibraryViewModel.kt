@@ -29,14 +29,11 @@ class LibraryViewModel @Inject constructor(
 
     val audioPermission = permissionRepository.audioPermissionIsGranted
 
-    fun checkAudioPermission() {
-//        if (!audioPermission.value) {
-//            permissionRepository.requestAudioPermission()
-//        }
-    }
-
     fun onPermissionRequest(requestCode: Int, grantResult: Boolean) {
         permissionRepository.onRequestPermissionsResult(requestCode, grantResult)
     }
 
+    fun addPlaylist() {
+
+    }
 }

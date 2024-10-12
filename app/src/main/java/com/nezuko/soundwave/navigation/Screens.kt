@@ -31,6 +31,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.SlideTransition
+import com.nezuko.addnewplaylist.AddNewPlaylistRoute
 import com.nezuko.auth.AuthViewModel
 import com.nezuko.auth.LoginRoute
 import com.nezuko.auth.RegisterRoute
@@ -176,8 +177,11 @@ object LibraryScreen : Tab {
             Log.i(TAG, "Content: playlists")
             val navigator = LocalNavigator.currentOrThrow
             LibraryRoute(
-                onPlaylistClick = { playlist ->
+                onPlaylistDetailsNavigate = { playlist ->
                     navigator.push(PlaylistDetailsScreen(playlist.id))
+                },
+                onAddNewPlaylistNavigate = {
+                    navigator.push(AddNewPlaylistScreen())
                 }
             )
         }
@@ -189,7 +193,7 @@ class MainScreen : Screen {
 
     @Composable
     override fun Content() {
-        TabNavigator(tab = HomeScreen) {
+        TabNavigator(tab = LibraryScreen) {
             Scaffold(
                 bottomBar = {
                     NavigationBar {
@@ -234,7 +238,7 @@ class PlaceHolderScreen : Screen {
     }
 }
 
-class PlaylistDetailsScreen(val playlistID: Long) : Screen {
+class PlaylistDetailsScreen(private val playlistID: Long) : Screen {
     @Composable
     override fun Content() {
         Log.i(TAG, "Content: playlist details")
@@ -244,4 +248,18 @@ class PlaylistDetailsScreen(val playlistID: Long) : Screen {
             onNavigateBack = navigator::pop
         )
     }
+}
+
+
+class AddNewPlaylistScreen() : Screen {
+    @Composable
+    override fun Content() {
+
+        val navigator = LocalNavigator.currentOrThrow
+        AddNewPlaylistRoute(
+            onNavigateBack = navigator::pop,
+            onDone = navigator::pop
+        )
+    }
+
 }
