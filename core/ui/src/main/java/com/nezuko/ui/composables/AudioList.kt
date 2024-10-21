@@ -1,11 +1,15 @@
 package com.nezuko.ui.composables
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -16,37 +20,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.nezuko.data.model.Audio
 import com.nezuko.data.model.Playlist
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaylistsList(
+fun AudioList(
     modifier: Modifier = Modifier,
-    playlists: List<Playlist>,
-    onPlaylistClick: (Playlist) -> Unit,
-    onPlaylistMoreClick: (Playlist) -> Unit,
-    onRedactClick: (Playlist) -> Unit
+    playlist: Playlist,
+    onAudioClick: (Audio) -> Unit,
+    onAudioMoreClick: (Audio) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
-    var lastPlaylistClicked by remember { mutableStateOf(Playlist.none()) }
-
-
+    var lastAudioClicked by remember { mutableStateOf(Audio.none()) }
 
     if (showBottomSheet) {
-        PlaylistBottomSheet(
-            playlist = lastPlaylistClicked,
+        AudioBottomSheet(
+            audio = lastAudioClicked,
             sheetState = sheetState,
             coroutineScope = scope,
             onSheetClosed = {
                 showBottomSheet = false
-            },
-            onRedact = { playlist ->
-                onRedactClick(playlist)
             }
         )
     }
@@ -55,20 +56,30 @@ fun PlaylistsList(
         modifier = modifier,
     ) {
         itemsIndexed(
-            items = playlists,
-            key = { _: Int, playlist: Playlist ->
-                playlist.id
-            }
-        ) { _: Int, playlist: Playlist ->
+            items = playlist.tracksList.toList(),
+            key = { index: Int, audio: Audio -> audio.id }
+        ) { _: Int, audio: Audio ->
+            AudioCard(
+                audio = audio,
+                onClick = onAudioClick,
 
-            PlaylistCard(
-                playlist = playlist,
-                onPlaylistClick = onPlaylistClick,
-                onPlaylistMoreClick = {
-                    lastPlaylistClicked = playlist
-                    onPlaylistMoreClick(playlist)
-                    showBottomSheet = true
-                }
+                rightActionButton = {
+                    IconButton(
+                        onClick = {
+                            lastAudioClicked = audio
+                            onAudioMoreClick(audio)
+                            showBottomSheet = true
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .width(30.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "больше"
+                        )
+                    }
+                },
             )
 
         }
@@ -77,13 +88,12 @@ fun PlaylistsList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PlaylistBottomSheet(
+private fun AudioBottomSheet(
     modifier: Modifier = Modifier,
-    playlist: Playlist,
+    audio: Audio,
     sheetState: SheetState,
     coroutineScope: CoroutineScope,
     onSheetClosed: () -> Unit,
-    onRedact: (Playlist) -> Unit,
 ) {
     ModalBottomSheet(
         modifier = modifier,
@@ -92,20 +102,6 @@ private fun PlaylistBottomSheet(
         },
         sheetState = sheetState
     ) {
-
-        Text(
-            text = "редактировать",
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    coroutineScope
-                        .launch { sheetState.hide() }
-                        .invokeOnCompletion { onSheetClosed() }
-                    onRedact(playlist)
-                }
-        )
-
-
         Text(
             text = "123",
             modifier = Modifier
@@ -116,7 +112,5 @@ private fun PlaylistBottomSheet(
                         .invokeOnCompletion { onSheetClosed() }
                 }
         )
-
     }
 }
-

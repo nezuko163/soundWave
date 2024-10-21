@@ -16,11 +16,11 @@ import com.nezuko.ui.composables.PlaylistsList
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun LibraryScreen(
+internal fun LibraryScreen(
     modifier: Modifier = Modifier,
     playlists: List<Playlist>,
     onPlaylistClick: (Playlist) -> Unit,
-    onAddClick: () -> Unit
+    onAddNewPlaylistClick: (Playlist) -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -28,20 +28,27 @@ fun LibraryScreen(
             TopAppBar(
                 title = { Text(text = "Бибилиотека") },
                 actions = {
-                    IconButton(onClick = onAddClick) {
+                    IconButton(onClick = { onAddNewPlaylistClick(Playlist.none()) }) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "")
                     }
                 }
             )
         }
     ) { padding ->
-        PlaylistsList(
-            modifier.padding(padding),
-            playlists = playlists,
-            onPlaylistClick = onPlaylistClick,
-            onPlaylistMoreClick = {}
-        )
+
+        if (playlists.isNotEmpty()) {
+            PlaylistsList(
+                modifier.padding(padding),
+                playlists = playlists,
+                onPlaylistClick = onPlaylistClick,
+                onPlaylistMoreClick = {},
+                onRedactClick = { playlist ->
+                    onAddNewPlaylistClick(playlist)
+                }
+            )
+        } else {
+            Text(text = "загрузка")
+        }
     }
 }
-
 

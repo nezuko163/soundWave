@@ -13,7 +13,7 @@ data class Playlist(
 ) {
     companion object {
         fun none() = Playlist(
-            id = -1L,
+            id = 0L,
             title = "",
             ownerId = "",
             ownerName = "",

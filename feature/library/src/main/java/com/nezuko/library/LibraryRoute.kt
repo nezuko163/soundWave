@@ -22,7 +22,7 @@ private const val TAG = "LibraryRoute"
 fun LibraryRoute(
     modifier: Modifier = Modifier,
     onPlaylistDetailsNavigate: (Playlist) -> Unit,
-    onAddNewPlaylistNavigate: () -> Unit,
+    onAddNewPlaylistNavigate: (Playlist) -> Unit,
     vm: LibraryViewModel = hiltViewModel()
 ) {
 
@@ -30,13 +30,14 @@ fun LibraryRoute(
     val audioPermissionIsGranted by vm.audioPermission.collectAsState()
     var isFirstLoading by rememberSaveable { mutableStateOf(true) }
 
+    Log.i(TAG, "LibraryRoute: $playlists")
+
     val launcher = permissionLauncher(
         onGranted = { vm.onPermissionRequest(REQUEST_CODE_AUDIO, true) },
         onFailure = { vm.onPermissionRequest(REQUEST_CODE_AUDIO, false) },
     )
 
     LaunchedEffect(isFirstLoading) {
-        Log.i(TAG, "LibraryRoute: isfirst = $isFirstLoading")
         if (!isFirstLoading) return@LaunchedEffect
         if (!audioPermissionIsGranted) {
             val permission =
@@ -51,26 +52,20 @@ fun LibraryRoute(
     }
 
     LaunchedEffect(audioPermissionIsGranted) {
-        Log.i(TAG, "LibraryRoute: launched: isfirst = $isFirstLoading")
-        Log.i(TAG, "LibraryRoute: launched: audio = $audioPermissionIsGranted")
-
         if (isFirstLoading) {
             if (audioPermissionIsGranted) {
-                Log.i(TAG, "LibraryRoute: гавно")
                 vm.loadPlaylists()
                 isFirstLoading = false
             }
         }
     }
 
-    if (playlists.isNotEmpty()) {
-        LibraryScreen(
-            modifier = modifier,
-            playlists = playlists,
-            onPlaylistClick = onPlaylistDetailsNavigate,
-            onAddClick = onAddNewPlaylistNavigate
-        )
-    }
+    LibraryScreen(
+        modifier = modifier,
+        playlists = playlists,
+        onPlaylistClick = onPlaylistDetailsNavigate,
+        onAddNewPlaylistClick = onAddNewPlaylistNavigate
+    )
 //    else if (playlists.status == ResultModel.Status.LOADING) {
 //        Box(modifier = modifier.fillMaxSize()) {
 //            Text(text = "Загрузка", modifier = Modifier.align(Alignment.Center))

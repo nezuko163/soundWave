@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier) {
+internal fun SearchScreen(modifier: Modifier = Modifier) {
     var a by rememberSaveable { mutableIntStateOf(0) }
 
     Column(modifier = modifier.clickable { a++ }) {

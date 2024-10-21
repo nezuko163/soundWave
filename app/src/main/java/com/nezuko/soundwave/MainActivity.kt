@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import cafe.adriel.voyager.core.screen.Screen
 import com.nezuko.data.model.AuthState
+import com.nezuko.soundwave.navigation.AddNewPlaylistScreen
 import com.nezuko.soundwave.navigation.AuthScreen
 import com.nezuko.soundwave.navigation.MainScreen
 import com.nezuko.ui.theme.SoundWaveTheme

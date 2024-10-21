@@ -66,6 +66,7 @@ class PlaylistRepositoryImpl @Inject constructor(
 
         localSource.loadLocalTracks()
         _localTracksPlaylist = localSource.localTracksPlaylist
+        _playlistsWithLoadedTracks.value.add(_localTracksPlaylist)
         _loadedTracks.update { it.apply { addAll(_localTracksPlaylist.tracksList) } }
     }
 
@@ -78,6 +79,8 @@ class PlaylistRepositoryImpl @Inject constructor(
     private fun endLoading() {
         _playlists.value =
             ArrayList(_remotePlaylists.value + _localPlaylists.value + _localTracksPlaylist)
+
+        Log.i(TAG, "endLoading: ${_playlists.value}")
     }
 
     private val _playlistsWithLoadedTracks = MutableStateFlow<ArrayList<Playlist>>(arrayListOf())

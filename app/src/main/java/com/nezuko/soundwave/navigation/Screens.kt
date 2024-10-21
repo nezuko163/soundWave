@@ -32,10 +32,13 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.nezuko.addnewplaylist.AddNewPlaylistRoute
+import com.nezuko.addnewtrackstoplaylist.AddNewTracksToPlaylistRoute
+import com.nezuko.addnewtrackstoplaylist.AddNewTracksToPlaylistViewModel
 import com.nezuko.auth.AuthViewModel
 import com.nezuko.auth.LoginRoute
 import com.nezuko.auth.RegisterRoute
 import com.nezuko.auth.StartRoute
+import com.nezuko.data.model.Playlist
 import com.nezuko.home.HomeRoute
 import com.nezuko.home.HomeViewModel
 import com.nezuko.library.LibraryRoute
@@ -180,8 +183,9 @@ object LibraryScreen : Tab {
                 onPlaylistDetailsNavigate = { playlist ->
                     navigator.push(PlaylistDetailsScreen(playlist.id))
                 },
-                onAddNewPlaylistNavigate = {
-                    navigator.push(AddNewPlaylistScreen())
+                onAddNewPlaylistNavigate = { playlist: Playlist ->
+                    val id = if (playlist.id != 0L) playlist.id else null
+                    navigator.push(AddNewPlaylistScreen(id))
                 }
             )
         }
@@ -251,15 +255,28 @@ class PlaylistDetailsScreen(private val playlistID: Long) : Screen {
 }
 
 
-class AddNewPlaylistScreen() : Screen {
+class AddNewPlaylistScreen(
+    private val id: Long? = null
+) : Screen {
     @Composable
     override fun Content() {
-
         val navigator = LocalNavigator.currentOrThrow
         AddNewPlaylistRoute(
+            id = id,
             onNavigateBack = navigator::pop,
-            onDone = navigator::pop
+            onDone = navigator::pop,
+            onAddNewTracksNavigate = { playlist ->
+                navigator.push(AddNewTracksToPlaylistScreen(id))
+            }
         )
     }
+}
 
+class AddNewTracksToPlaylistScreen(private val id: Long? = null) : Screen {
+    @Composable
+    override fun Content() {
+        val vm: AddNewTracksToPlaylistViewModel = hiltViewModel()
+        val navigator = LocalNavigator.currentOrThrow
+        AddNewTracksToPlaylistRoute(id = id, vm = vm, onNavigateBack = navigator::pop)
+    }
 }

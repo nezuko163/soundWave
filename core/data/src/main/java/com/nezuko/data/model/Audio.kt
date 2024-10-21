@@ -12,5 +12,20 @@ data class Audio(
     val dateAdded: Long,
     var queueId: Long = 0
 ) {
+    companion object {
+        fun none() = Audio(
+            id = 3562346L,
+            title = "",
+            artist = "",
+            album = "",
+            artUrl = "",
+            mediaUrl = "",
+            duration = 0L,
+            ownerId = "",
+            dateAdded = 0L
+        )
+    }
+
     fun setQueueId(queueId: Long) = this.copy(queueId = queueId)
 }
+

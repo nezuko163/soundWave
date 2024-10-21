@@ -28,7 +28,7 @@ fun ImageFromURI(
     AsyncImage(
         model = ImageRequest.Builder(context)
             .crossfade(crossFade)
-            .data("https:$url")
+            .data(url)
             .build(),
         contentDescription = contentDescription,
         modifier = modifier,

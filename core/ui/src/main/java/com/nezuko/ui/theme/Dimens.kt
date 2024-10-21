@@ -12,9 +12,9 @@ data class Dimens(
 ) {
     companion object {
         val default = Dimens(
-            playlistIconSmall = 100.dp,
+            playlistIconSmall = 80.dp,
             playlistIconBig = 8.dp,
-            audioIconSmall = 16.dp,
+            audioIconSmall = 70.dp,
             audioIconBig = 24.dp,
             extraLarge = 32.dp
         )

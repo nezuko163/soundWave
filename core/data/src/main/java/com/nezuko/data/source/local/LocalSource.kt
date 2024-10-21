@@ -20,7 +20,7 @@ class LocalSource @Inject constructor(
     private val TAG = "LocalSource"
 
     val localTracksPlaylist = Playlist(
-        id = 0L,
+        id = -1L,
         title = "Файлы на устройстве",
         ownerId = "",
         ownerName = "Плейлист",
