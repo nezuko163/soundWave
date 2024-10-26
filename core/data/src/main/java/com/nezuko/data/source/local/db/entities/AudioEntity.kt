@@ -7,9 +7,9 @@ import com.nezuko.data.model.Audio
 
 @Entity(tableName = "audio_table")
 data class AudioEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "audio_id")
-    val id: Long,
+    val id: Long = 0,
     @ColumnInfo(name = "audio_title") val title: String,
     @ColumnInfo(name = "audio_artist") val artist: String,
     @ColumnInfo(name = "audio_album") val album: String,

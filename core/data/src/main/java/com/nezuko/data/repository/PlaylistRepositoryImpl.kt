@@ -95,7 +95,7 @@ class PlaylistRepositoryImpl @Inject constructor(
 
     override suspend fun loadPlaylistById(playlistId: Long) {
         var lookingPlaylist = _playlistsWithLoadedTracks.value.find { it.id == playlistId }
-
+        
         if (lookingPlaylist == null) {
             if (playlistId > 0) {
                 lookingPlaylist = Playlist.none()
@@ -103,6 +103,8 @@ class PlaylistRepositoryImpl @Inject constructor(
             lookingPlaylist = Playlist.none()
         }
 
+        Log.i(TAG, "loadPlaylistById: $lookingPlaylist")
+        
         _lastLoadedPlaylist.update { lookingPlaylist }
     }
 }

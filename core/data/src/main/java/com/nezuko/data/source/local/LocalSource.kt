@@ -50,7 +50,7 @@ class LocalSource @Inject constructor(
                     queueId = index.toLong()
                 )
                 Log.i(TAG, "getAudios: ${it.name}")
-
+                localTracksPlaylist.tracksIdList.add(-it.musicID)
                 lstAudio.add(audio)
             }
         Log.i(TAG, "loadLocalTracks: $lstAudio")

@@ -2,7 +2,6 @@ package com.nezuko.ui.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
@@ -20,9 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.nezuko.data.model.Audio
 import com.nezuko.data.model.Playlist
 import kotlinx.coroutines.CoroutineScope
@@ -62,24 +59,11 @@ fun AudioList(
             AudioCard(
                 audio = audio,
                 onClick = onAudioClick,
-
                 rightActionButton = {
-                    IconButton(
-                        onClick = {
-                            lastAudioClicked = audio
-                            onAudioMoreClick(audio)
-                            showBottomSheet = true
-                        },
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .width(30.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "больше"
-                        )
+                    IconButton(onClick = { onAudioMoreClick(audio) }) {
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
                     }
-                },
+                }
             )
 
         }

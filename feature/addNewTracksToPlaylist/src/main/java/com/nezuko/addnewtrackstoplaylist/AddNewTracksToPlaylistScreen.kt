@@ -1,5 +1,6 @@
 package com.nezuko.addnewtrackstoplaylist
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -28,6 +33,8 @@ import com.nezuko.data.model.Audio
 import com.nezuko.data.model.Playlist
 import com.nezuko.ui.composables.AudioCard
 import java.util.Queue
+
+private const val TAG = "AddNewTracksToPlaylistScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +47,16 @@ internal fun AddNewTracksToPlaylistScreen(
     onDoneClick: (tracks: ArrayList<Audio>) -> Unit,
 ) {
     val scroll = rememberScrollState()
-    val newTracks = ArrayList(tracks)
+    val newTracks = remember { mutableStateListOf<Audio>() }
+    val newTracksId = remember { mutableStateListOf<Long>() }
+
+    if (playlist.tracksIdList.isNotEmpty()) {
+        Log.i(TAG, "AddNewTracksToPlaylistScreen: id = ${playlist.tracksIdList}")
+        Log.i(TAG, "AddNewTracksToPlaylistScreen: first = ${playlist.tracksList.first()}")
+    }
+
+    newTracks.addAll(playlist.tracksList)
+    newTracksId.addAll(playlist.tracksIdList)
 
     Scaffold(
         modifier = modifier
@@ -66,7 +82,7 @@ internal fun AddNewTracksToPlaylistScreen(
         },
         bottomBar = {
             Button(
-                onClick = { onDoneClick(newTracks) },
+                onClick = { onDoneClick(ArrayList(newTracks)) },
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {
@@ -84,10 +100,16 @@ internal fun AddNewTracksToPlaylistScreen(
                     audio = audio,
                     rightActionButton = {
                         Checkbox(
-                            checked = (playlist.tracksIdList.contains(audio.id)),
+                            checked = (newTracksId.contains(audio.id)),
                             onCheckedChange = { isChecked ->
-                                if (isChecked) newTracks.add(audio)
-                                else newTracks.remove(audio)
+                                Log.i(TAG, "AddNewTracksToPlaylistScreen: $isChecked")
+                                if (!isChecked) {
+                                    newTracksId.remove(audio.id)
+                                    newTracks.remove(audio)
+                                } else {
+                                    newTracksId.add(audio.id)
+                                    newTracks.add(audio)
+                                }
                             }
                         )
                     },

@@ -2,7 +2,6 @@ package com.nezuko.addnewtrackstoplaylist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nezuko.data.model.Audio
 import com.nezuko.data.repository.PlaylistRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,9 +19,6 @@ class AddNewTracksToPlaylistViewModel @Inject constructor(
         }
     }
 
-    fun updateTracks(tracks: ArrayList<Audio>) {
-
-    }
 
     val tracksForSearch = playlistRepository.loadedTracks
 }

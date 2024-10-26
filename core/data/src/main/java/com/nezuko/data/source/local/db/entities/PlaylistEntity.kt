@@ -7,8 +7,8 @@ import com.nezuko.data.model.Playlist
 
 @Entity(tableName = "playlist")
 data class PlaylistEntity(
-    @PrimaryKey
-    @ColumnInfo(name = "playlist_id") val id: Long,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "playlist_id") val id: Long = 0,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "art_url") val artUrl: String,
     @ColumnInfo(name = "date_created") val dateCreated: Long,

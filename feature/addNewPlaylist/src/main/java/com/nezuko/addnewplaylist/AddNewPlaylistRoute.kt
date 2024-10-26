@@ -18,15 +18,19 @@ fun AddNewPlaylistRoute(
     id: Long?,
     onNavigateBack: () -> Unit,
     onDone: () -> Unit,
-    vm: AddNewPlaylistViewModel = hiltViewModel(),
+    vm: AddNewPlaylistViewModel,
     onAddNewTracksNavigate: (Playlist) -> Unit
 ) {
     Log.i(TAG, "AddNewPlaylistRoute: ")
     val playlist by vm.playlist.collectAsState()
+    val tracks by vm.tracks.collectAsState()
 
     LaunchedEffect(id) {
         if (id != null) vm.loadPlaylist(id)
     }
+
+    Log.i(TAG, "AddNewPlaylistRoute: $tracks")
+
 
     if (id != null) {
         AddNewPlaylistScreen(

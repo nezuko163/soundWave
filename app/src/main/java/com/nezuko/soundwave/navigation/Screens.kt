@@ -32,12 +32,14 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.nezuko.addnewplaylist.AddNewPlaylistRoute
+import com.nezuko.addnewplaylist.AddNewPlaylistViewModel
 import com.nezuko.addnewtrackstoplaylist.AddNewTracksToPlaylistRoute
 import com.nezuko.addnewtrackstoplaylist.AddNewTracksToPlaylistViewModel
 import com.nezuko.auth.AuthViewModel
 import com.nezuko.auth.LoginRoute
 import com.nezuko.auth.RegisterRoute
 import com.nezuko.auth.StartRoute
+import com.nezuko.data.model.Audio
 import com.nezuko.data.model.Playlist
 import com.nezuko.home.HomeRoute
 import com.nezuko.home.HomeViewModel
@@ -261,22 +263,40 @@ class AddNewPlaylistScreen(
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val vm: AddNewPlaylistViewModel = hiltViewModel()
         AddNewPlaylistRoute(
             id = id,
             onNavigateBack = navigator::pop,
             onDone = navigator::pop,
+            vm = vm,
             onAddNewTracksNavigate = { playlist ->
-                navigator.push(AddNewTracksToPlaylistScreen(id))
+                navigator.push(
+                    AddNewTracksToPlaylistScreen(id) { tracks ->
+                        vm.setTracks(tracks)
+                        navigator.pop()
+                    }
+                )
             }
         )
     }
 }
 
-class AddNewTracksToPlaylistScreen(private val id: Long? = null) : Screen {
+class AddNewTracksToPlaylistScreen(
+    private val id: Long? = null,
+    private val onResult: (ArrayList<Audio>) -> Unit,
+) : Screen {
     @Composable
     override fun Content() {
-        val vm: AddNewTracksToPlaylistViewModel = hiltViewModel()
         val navigator = LocalNavigator.currentOrThrow
-        AddNewTracksToPlaylistRoute(id = id, vm = vm, onNavigateBack = navigator::pop)
+        val vm: AddNewTracksToPlaylistViewModel = hiltViewModel()
+        AddNewTracksToPlaylistRoute(
+            id = id,
+            vm = vm,
+            onNavigateBack = navigator::pop,
+            onTracksAdded = {
+                Log.i(TAG, "Content: $it")
+                onResult(it)
+            }
+        )
     }
 }
